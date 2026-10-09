@@ -32,6 +32,16 @@ function render(){
 get('enemy-roll').onclick=()=>{
  rolled=!rolled;get('enemy-roll').setAttribute('aria-pressed',String(rolled));get('enemy-roll').textContent=rolled?'Igel wieder öffnen':'Igel einrollen';
  get('enemy-hedgehog').classList.toggle('rolled',rolled);get('enemy-hedgehog').textContent=rolled?'':'🦔';
+ if(rolled){
+  const ns='http://www.w3.org/2000/svg',svg=document.createElementNS(ns,'svg');svg.setAttribute('viewBox','0 0 140 140');
+  const circle=document.createElementNS(ns,'circle');circle.setAttribute('cx','70');circle.setAttribute('cy','70');circle.setAttribute('r','61');circle.setAttribute('fill','#98734e');circle.setAttribute('stroke','#60462d');circle.setAttribute('stroke-width','3');svg.append(circle);
+  for(let row=0;row<7;row++)for(let col=0;col<7;col++){
+   const x=22+col*15+(row%2?7:0),y=24+row*15;if((x-70)**2+(y-70)**2>49**2)continue;
+   const spike=document.createElementNS(ns,'path');spike.setAttribute('d',`M ${x-5} ${y+6} L ${x+2} ${y-7} L ${x+5} ${y+4}`);spike.setAttribute('fill','#c7ad87');spike.setAttribute('stroke','#63472e');spike.setAttribute('stroke-width','1.5');svg.append(spike);
+  }
+  get('enemy-hedgehog').append(svg);
+ }
+
  get('enemy-shield-text').textContent=rolled?'Die Stacheln zeigen nach außen. Kopf und Bauch sind geschützt. Das hilft gegen viele Angreifer. Uhu und Dachs können trotzdem gefährlich werden. Vor Autos und Mährobotern schützt Einrollen nicht.':'Bei Gefahr kann sich der Igel zusammenrollen. Was passiert dann mit seinem Bauch und seinem Kopf?';
 };
 get('enemy-reset').onclick=()=>{assigned.clear();selected=null;render();get('enemy-feedback').textContent='Welche Tiere und Gefahren kennt ihr schon?';};
