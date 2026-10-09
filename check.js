@@ -3,7 +3,7 @@ const root = document.getElementById('check-root');
 const storageNote = document.getElementById('check-storage');
 const KEY = 'igel-forschercheck-v1';
 const choice = (question, options, answer) => ({question, options, answer});
-const tasks = {
+const legacyTasks = {
  A: [
   {title:'Körper', icon:'🦔', items:[choice('Was trägt der Igel auf dem Rücken?', ['Stacheln','Federn'],0),choice('Womit riecht der Igel?', ['Mit der Nase','Mit dem Schwanz'],0),choice('Womit hört der Igel?', ['Mit den Pfoten','Mit den Ohren'],1),choice('Wie viele Pfoten hat der Igel?', ['Zwei','Vier'],1)]},
   {title:'Nahrung',icon:'🪲',items:[choice('🪲 Käfer: Nahrung oder keine Nahrung?', ['Nahrung','Keine Nahrung'],0),choice('🍪 Keks: Nahrung oder keine Nahrung?', ['Nahrung','Keine Nahrung'],1),choice('🐛 Raupe: Nahrung oder keine Nahrung?', ['Nahrung','Keine Nahrung'],0),choice('🍬 Bonbon: Nahrung oder keine Nahrung?', ['Nahrung','Keine Nahrung'],1)]},
@@ -12,16 +12,22 @@ const tasks = {
   {title:'Hilfe',icon:'💧',items:[choice('Was stellen wir zum Trinken hin?', ['Milch','Frisches Wasser'],1),choice('Was hilft als Versteck?', ['Laub und Äste liegen lassen','Alle Verstecke entfernen'],0),choice('Was hilft auf dem Weg zum nächsten Garten?', ['Ein Durchgang im Zaun','Ein ganz geschlossener Zaun'],0),choice('Was tun wir mit dem Mähroboter bei Nacht?', ['Ausschalten','Fahren lassen'],0)]}
  ]
 };
+const tasks={A:[
+{title:'Körper',icon:'🦔',items:[choice('Wo hat der Igel Fell und keine Stacheln?',['Auf dem Rücken','Am Bauch','Am ganzen Körper'],1),choice('Der Igel sucht Nahrung. Womit kann er sie riechen?',['Mit den Augen','Mit der Nase','Mit den Pfoten'],1),choice('Welcher Körperteil hilft beim Graben?',['Die Ohren','Die Stacheln','Die Pfoten mit Krallen'],2),choice('Was schützt der Igel beim Einrollen?',['Bauch und Kopf','Nur die Stacheln','Nur den Rücken'],0)]},
+{title:'Nahrung',icon:'🪲',items:[choice('Was findet der Igel als Nahrung am Boden?',['Grashalme','Regenwürmer','Herbstblätter'],1),choice('Welche Karte gehört zu den Nahrungstieren?',['Apfel','Raupe','Eichel'],1),choice('Welcher Satz passt zum Igel?',['Er frisst vor allem Gras.','Er frisst vor allem Früchte.','Er frisst vor allem kleine Tiere.'],2),choice('Was gehört zur Nahrung des Igels?',['Käfer','Brot','Karotte'],0)]},
+{title:'Zuhause',icon:'🍂',items:[choice('Wo findet der Igel einen geschützten Schlafplatz?',['Auf einer freien Rasenfläche','Unter einer dichten Hecke','Auf einem Gartenweg'],1),choice('Welche Gartenecke bietet ein Versteck?',['Eine Ecke mit Laub und Ästen','Eine Ecke mit kurzem Gras','Eine Ecke mit Steinplatten'],0),choice('Warum ist eine offene Rasenfläche kein guter Schlafplatz?',['Dort kann er nicht laufen.','Dort fehlen geschützte Verstecke.','Dort kann er keine Nahrung suchen.'],1),choice('Was braucht der Igel an seinem Schlafplatz?',['Viel Licht und freie Sicht','Einen geschützten, ruhigen Ort','Eine glatte Fläche ohne Laub'],1)]},legacyTasks.A[3],
+{title:'Hilfe',icon:'💧',items:[choice('Es ist heiß und trocken. Was stellen wir zum Trinken hin?',['Milch','Frisches Wasser','Saft'],1),choice('Wir entdecken ein bewohntes Igelversteck. Was tun wir?',['Das Versteck in Ruhe lassen','Den Igel für ein Foto herausnehmen','Das Nest an einen anderen Ort tragen'],0),choice('Ein Zaun versperrt den Weg. Was hilft?',['Ein höherer Zaun','Mehr Wasser am Zaun','Ein Durchgang am Boden mit Hilfe Erwachsener'],2),choice('Der Igel sucht in der Dämmerung Nahrung. Was hilft?',['Den Mähroboter ausschalten','Den Mähroboter langsamer fahren lassen','Den Garten heller beleuchten'],0)]}]};
 let state = null, screen = 'setup', teacher = false;
 const el = (tag,text,cls) => {const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;};
 const btn = (text,action,cls='quiet') => {const b=el('button',text,cls);b.type='button';b.onclick=action;return b;};
-const list = () => tasks[state.version];
+const list = () => (state.schema===1?legacyTasks:tasks)[state.version];
 const completed = (t,i) => t.items.every((q,j)=>Number.isInteger(state.answers[i]?.[j]));
 function save(){try{localStorage.setItem(KEY,JSON.stringify(state));storageNote.textContent='Dieser Check wird nur in diesem Browser gespeichert. Vor dem nächsten Kind den Check löschen.';}catch{storageNote.textContent='Speichern ist in diesem Browser nicht möglich. Die Antworten bleiben nur bis zum Neuladen erhalten. Ergebnis vor dem Schließen drucken.';}}
 try {
  const data=JSON.parse(localStorage.getItem(KEY)||'null');
- if(data?.schema===1 && tasks[data.version] && Array.isArray(data.answers) && Number.isInteger(data.index) && data.index>=0 && data.index<tasks[data.version].length && typeof data.code==='string' && typeof data.support==='string' && typeof data.comment==='string' && typeof data.submitted==='boolean' && typeof data.read==='boolean' && typeof data.date==='string'){
-  const valid=tasks[data.version].every((t,i)=>Array.isArray(data.answers[i]) && (t.items?t.items.every((q,j)=>data.answers[i][j]===null || (Number.isInteger(data.answers[i][j])&&data.answers[i][j]>=0&&data.answers[i][j]<q.options.length)):t.fields.every((_,j)=>typeof data.answers[i][j]==='string')));
+ const storedTasks=data?.schema===1?legacyTasks:tasks;
+ if([1,2].includes(data?.schema) && storedTasks[data.version] && Array.isArray(data.answers) && Number.isInteger(data.index) && data.index>=0 && data.index<storedTasks[data.version].length && typeof data.code==='string' && typeof data.support==='string' && typeof data.comment==='string' && typeof data.submitted==='boolean' && typeof data.read==='boolean' && typeof data.date==='string'){
+  const valid=storedTasks[data.version].every((t,i)=>Array.isArray(data.answers[i]) && (t.items?t.items.every((q,j)=>data.answers[i][j]===null || (Number.isInteger(data.answers[i][j])&&data.answers[i][j]>=0&&data.answers[i][j]<q.options.length)):t.fields.every((_,j)=>typeof data.answers[i][j]==='string')));
   if(valid){state=data;storageNote.textContent='Ein Check ist auf diesem Gerät gespeichert. Fortsetzen oder nach dem Sichern löschen.';}
  }
 } catch {storageNote.textContent='Kein gespeicherter Check verfügbar.';}
@@ -29,13 +35,14 @@ function show(next){if('speechSynthesis' in window)speechSynthesis.cancel();scre
 function field(label,value,change,multiline=false){const wrap=el('label',label,'check-field');const input=el(multiline?'textarea':'input');if(!multiline)input.type='text';input.setAttribute('aria-label',label);input.value=value;input.maxLength=multiline?1500:80;if(multiline)input.rows=3;const printValue=el('span',value||'Keine Angabe','check-print-value');printValue.setAttribute('aria-hidden','true');input.oninput=()=>{change(input.value);printValue.textContent=input.value||'Keine Angabe';};wrap.append(input,printValue);return wrap;}
 function render(){
  root.replaceChildren();
+ window.dispatchEvent(new CustomEvent('igel-check-state',{detail:{active:Boolean(state&&!state.submitted)}}));
  if(screen==='setup'){
   root.append(el('h2','Für die Lehrkraft: Check vorbereiten'));
   root.append(el('p','Fünf Aufgabenbereiche mit insgesamt 20 Punkten. Die Antworten werden nach der Abgabe automatisch ausgewertet. Plane etwa 15 bis 20 Minuten ein. Du kannst die Aufgaben vorlesen lassen.'));
   if(state){root.append(el('p','Gespeichert: Version '+state.version+' · '+(state.code||'ohne Kürzel')+(state.submitted?' · abgegeben':' · in Bearbeitung')));root.append(btn(state.submitted?'Abgegebenen Check öffnen':'Gespeicherten Check fortsetzen',()=>{teacher=false;show(state.submitted?'submitted':'task');},'sun'),btn('Gespeicherten Check löschen',()=>show('delete')));return;}
   const form=el('form');
   let code='',read=false;form.append(field('Kürzel (freiwillig, kein voller Name)',code,v=>code=v));const readLabel=el('label',undefined,'check-toggle');const readBox=el('input');readBox.type='checkbox';readBox.onchange=()=>read=readBox.checked;readLabel.append(readBox,el('span','Vorlesen anbieten'));form.append(readLabel);
-  const start=el('button','Check starten','sun');start.type='submit';form.append(start);form.onsubmit=e=>{e.preventDefault();state={schema:1,version:'A',code,date:new Date().toLocaleDateString('de-DE'),read,index:0,answers:tasks.A.map(t=>t.items.map(()=>null)),support:'',comment:'',submitted:false};teacher=false;save();show('task');};root.append(form);
+  const start=el('button','Check starten','sun');start.type='submit';form.append(start);form.onsubmit=e=>{e.preventDefault();state={schema:2,version:'A',code,date:new Date().toLocaleDateString('de-DE'),read,index:0,answers:tasks.A.map(t=>t.items.map(()=>null)),support:'',comment:'',submitted:false};teacher=false;save();show('task');};root.append(form);
  } else if(screen==='delete'){
   root.append(el('h2','Check von diesem Gerät löschen?'),el('p','Sichere den Ergebnisbogen vorher. Danach sind die Antworten in diesem Browser entfernt.'));
   root.append(btn('Abbrechen',()=>show('setup')),btn('Jetzt löschen',()=>{try{localStorage.removeItem(KEY);}catch{storageNote.textContent='Löschen fehlgeschlagen. Bitte Browserdaten prüfen.';return;}state=null;teacher=false;storageNote.textContent='Der Check wurde gelöscht.';show('setup');},'sun'));
@@ -56,12 +63,12 @@ function render(){
   let total=0;
   list().forEach((t,i)=>{
    const section=el('section',undefined,'check-report-task');section.append(el('h3',t.title));
-   let points=0;t.items.forEach((q,j)=>{const a=state.answers[i][j],good=a===q.answer;if(good)points++;section.append(el('p',q.question+' Antwort: '+(a===null?'offen':q.options[a])+' · '+(good?'1':'0')+' Punkt. Erwartet: '+q.options[q.answer]+'.'));});total+=points;section.append(el('strong',points+' / 4 Punkte · '+(points===4?'sicher':points>=2?'teilweise sicher':'noch üben')));
+   let points=0;t.items.forEach((q,j)=>{const a=state.answers[i][j],good=a===q.answer;if(good)points++;section.append(el('p',q.question+' Antwort: '+(a===null?'offen':q.options[a])+' · '+(good?'1':'0')+' Punkt. Erwartet: '+q.options[q.answer]+'.'));});total+=points;section.append(el('strong',points+' / 4 Auswahlantworten richtig'));
    report.append(section);
   });
   report.append(el('h3','Gesamt: '+total+' / '+(list().length*4)+' Punkte'));
   report.append(field('Unterstützung (z. B. vorgelesen / mündlich aufgenommen)',state.support,v=>{state.support=v;save();}),field('Rückmeldung der Lehrkraft',state.comment,v=>{state.comment=v;save();},true));
-  report.append(el('p','Jede richtige Einzelantwort zählt einen Punkt. Offene Antworten zählen null Punkte. Die Rückmeldung zeigt, welche Lernbereiche sicher sind und wo noch geübt werden kann.'));
+  report.append(el('p','Jede richtige Einzelantwort zählt einen Punkt. Offene Antworten zählen null Punkte. Die Auswahlantworten geben Anhaltspunkte und ersetzen kein Gespräch. Lasst das Kind eine Antwort pro Bereich begründen, bevor ihr den Lernstand einschätzt.'));
   root.append(report,btn('Ergebnis drucken / als PDF sichern',()=>{document.body.classList.add('check-print');window.print();},'sun'),btn('Zur Vorbereitung',()=>{teacher=false;show('setup');}));
  }
 }

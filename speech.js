@@ -1,0 +1,3 @@
+export function stopSpeech(){if('speechSynthesis' in window)window.speechSynthesis.cancel();}
+export function speakText(text){if(!('speechSynthesis' in window)||!('SpeechSynthesisUtterance' in window))return;stopSpeech();const u=new SpeechSynthesisUtterance(text);u.lang='de-DE';u.rate=.65;window.speechSynthesis.speak(u);}
+export function readButton(getText,label){const b=document.createElement('button');b.type='button';b.className='quiet read-control';b.textContent=label;b.disabled=!('speechSynthesis' in window&&'SpeechSynthesisUtterance' in window);if(b.disabled)b.textContent='Vorlesen hier nicht verfügbar';b.onclick=()=>speakText(getText());return b;}
