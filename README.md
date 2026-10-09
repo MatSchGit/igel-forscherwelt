@@ -11,3 +11,7 @@ Alle benoetigten Dateien sind enthalten; es sind keine Sites-Dienste, Konten ode
 Das Modell ist eine detailliertere Lern-Darstellung, kein wissenschaftlicher 3D-Scan. Die Vorlesefunktion verwendet eine deutsche Systemstimme, sofern verfuegbar. Darstellung und Leistung auf dem eigenen iPad pruefen.
 
 Three.js Version 0.170.0 wird unter der MIT-Lizenz verwendet. Copyright Three.js authors. Siehe THREE-LICENSE.txt.
+
+## Ergänzungen
+Station „Helfen“: Vier Gartenstellen verbessern (Versteck, Durchgang, Wasser, Mähroboter bei Nacht). Jede der fünf Lernstationen enthält ein Forscherquiz mit zwei Fragen, Rückmeldungen und Neustart. Alle Ergänzungen sind eigene Texte und Darstellungen; Unterrichts-PDFs sind nicht enthalten.
+Fachliche Grundlage zum Igelschutz: https://www.nabu-rlp-sued.de/artenschutz/igel/ und https://www.nabu-gera-greiz.de/themen/natur-des-jahres/wildtier-des-jahres/kommt-ein-igel-in-meinen-garten-rein
