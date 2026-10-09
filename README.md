@@ -18,3 +18,6 @@ Fachliche Grundlage zum Igelschutz: https://www.nabu-rlp-sued.de/artenschutz/ige
 
 ## Forschercheck
 Version A: 5 Bereiche mit je 4 Einzelfragen, 20 Punkte, automatische Auswertung nach Abgabe. Antworten können vor Abgabe geändert werden. Lösungen erscheinen erst in der Lehrkraftauswertung. Lokaler Speicher enthält nur den aktuellen Check. Vor Gerätewechsel Ergebnis drucken/PDF sichern, vor dem nächsten Kind löschen. Die Lehrkraftansicht ist eine Bedienansicht ohne Passwortschutz; Durchführung unter Aufsicht. Keine zentrale Sammlung oder Übermittlung der Antworten. Vorlesen nutzt verfügbare deutsche Browser-/Systemstimmen, abhängig vom Gerät. Browserdruck erzeugt den Ergebnisbogen.
+
+## Feinde und Gefahren
+Station 06: Einrollen entdecken, sechs Karten zu natürlichen Fressfeinden und Gefahren zuordnen, zwei Forscherquizfragen. Uhu, Dachs und Fuchs als Fressfeinde; Mähroboter, Fahrzeuge und Teich ohne Ausstieg als andere Gefahren. Eigene Texte und schematische Darstellungen. Fachquellen stehen in der Lehrkraftinformation der Station.
